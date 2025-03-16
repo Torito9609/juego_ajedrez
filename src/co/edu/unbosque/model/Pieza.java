@@ -1,5 +1,6 @@
 package co.edu.unbosque.model;
 
+
 public abstract class Pieza {
 	protected ColorPieza color;
 	protected Posicion posicion;
@@ -35,5 +36,9 @@ public abstract class Pieza {
 	public void mover(Posicion destino) {
 		this.posicion = destino;
 	}
+	
+	public String getTipo() {
+        return this.getClass().getSimpleName();
+    }
 
 }

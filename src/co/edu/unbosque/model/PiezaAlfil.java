@@ -32,7 +32,7 @@ public class PiezaAlfil extends Pieza{
         int columnaActual = posicion.getColumna() + pasoColumna;
 
         while (filaActual != destino.getFila() || columnaActual != destino.getColumna()) {
-            if (tablero.hayPiezaEnPosicion(new Posicion(filaActual, columnaActual))) {
+            if (tablero.posicionOcupada(new Posicion(filaActual, columnaActual))) {
                 return false; 
             }
 

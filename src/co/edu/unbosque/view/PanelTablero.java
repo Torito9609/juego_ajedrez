@@ -9,7 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-class PanelTablero extends JPanel {
+public class PanelTablero extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JButton[][] botonesTablero;
 
