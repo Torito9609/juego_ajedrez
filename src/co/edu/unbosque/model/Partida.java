@@ -23,21 +23,20 @@ public class Partida {
 		this.jugadorMaquina = new Jugador("maquina", true);
 		this.maquina = new Maquina();
 		this.turnoRojas = true;
-		this.inicioPartida = LocalDateTime.now();
 		this.finPartida = null;
 		this.partidaPausada = false;
 		this.ganador = null;
 		this.arch = new Archivo();
 	}
 
-	public String iniciarPartida() {
+	public void iniciarPartida() {
 		if (inicioPartida == null) {
 			this.inicioPartida = LocalDateTime.now();
 			tablero.inicializarTablero();
 			turnoRojas = true;
-			return "La partida ha inciado a las: " + formatearHora(inicioPartida);
+			System.out.println("La partida ha inciado a las: " + formatearHora(inicioPartida));
 		} else {
-			return "La partida ya estaba iniciada";
+			System.out.println("La partida ya estaba iniciada");
 		}
 	}
 

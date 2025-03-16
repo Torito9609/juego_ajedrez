@@ -8,7 +8,11 @@ public class Tablero {
 	}
 
 	public void inicializarTablero() {
-		this.casillas = new Pieza[8][8];
+		for (int i = 0; i < 8; i++) {
+	        for (int j = 0; j < 8; j++) {
+	            casillas[i][j] = null;
+	        }
+	    }
 
 		for (int i = 0; i < 8; i++) {
 			casillas[1][i] = new PiezaPeon(ColorPieza.ROJO, new Posicion(1, i));
@@ -35,6 +39,8 @@ public class Tablero {
         
         casillas[0][4] = new PiezaRey(ColorPieza.ROJO, new Posicion(0, 4));
         casillas[7][4] = new PiezaRey(ColorPieza.NEGRO, new Posicion(7, 4));
+        
+        System.out.println("Tablero inicializado correctamente");
 	}
 
 	public Pieza obtenerPieza() {

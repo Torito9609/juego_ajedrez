@@ -26,7 +26,7 @@ public class PanelTablero extends JPanel {
 				botonesTablero[i][j].putClientProperty("fila", i);
 				botonesTablero[i][j].putClientProperty("columna", j);
 				if ((i + j) % 2 == 0) {
-					botonesTablero[i][j].setBackground(Color.RED);
+					botonesTablero[i][j].setBackground(new Color(200, 70, 70));
 				} else {
 					botonesTablero[i][j].setBackground(Color.DARK_GRAY);
 				}
@@ -36,12 +36,20 @@ public class PanelTablero extends JPanel {
 	}
 
 	public void actualizarTablero(ImageIcon[][] iconosTablero) {
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 8; j++) {
-				botonesTablero[i][j].setIcon(iconosTablero[i][j]);
-			}
-		}
+	    //System.out.println("Se llamó a actualizarTablero()");
+	    
+	    for (int i = 0; i < 8; i++) {
+	        for (int j = 0; j < 8; j++) {
+	            if (iconosTablero[i][j] != null) {
+	                //System.out.println("Icono asignado en [" + i + "][" + j + "]");
+	            } else {
+	                //System.out.println("Sin icono en [" + i + "][" + j + "]");
+	            }
+	            botonesTablero[i][j].setIcon(iconosTablero[i][j]);
+	        }
+	    }
 	}
+
 
 	public void setListener(ActionListener listener) {
 		for (int i = 0; i < 8; i++) {
