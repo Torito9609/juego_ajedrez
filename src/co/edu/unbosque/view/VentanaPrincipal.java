@@ -1,6 +1,5 @@
 package co.edu.unbosque.view;
 
-import javax.swing.*;
 import java.awt.*;
 import javax.swing.JFrame;
 
