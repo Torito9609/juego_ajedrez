@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -15,6 +16,7 @@ class PanelTablero extends JPanel {
 	public PanelTablero() {
 		setLayout(new GridLayout(8, 8));
 		botonesTablero = new JButton[8][8];
+		setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
 
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {

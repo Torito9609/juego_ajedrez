@@ -29,8 +29,8 @@ class PanelLateral extends JPanel {
         setBackground(Color.DARK_GRAY);
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         
-        Font tituloFont = new Font("Arial", Font.BOLD, 16);
-        Font tiempoFont = new Font("Arial", Font.BOLD, 24);
+        Font tituloFont = new Font("Arial", Font.BOLD, 20);
+        Font tiempoFont = new Font("Arial", Font.BOLD, 36);
 
         tituloTiempo = new JLabel("Tiempo en partida");
         tituloTiempo.setForeground(Color.WHITE);
