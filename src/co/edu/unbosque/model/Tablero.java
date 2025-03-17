@@ -40,20 +40,20 @@ public class Tablero {
 		casillas[0][4] = new PiezaRey(ColorPieza.ROJO, new Posicion(0, 4));
 		casillas[7][4] = new PiezaRey(ColorPieza.NEGRO, new Posicion(7, 4));
 
-		//System.out.println("Tablero inicializado correctamente");
+		System.out.println("Tablero inicializado correctamente");
 	}
 
 	public Pieza obtenerPieza(Posicion posicion) {
 		return casillas[posicion.getFila()][posicion.getColumna()];
 	}
 
-	public void moverPieza(Movimiento movimiento) {
+	public boolean moverPieza(Movimiento movimiento) {
 		Posicion origen = movimiento.getOrigen();
 		Posicion destino = movimiento.getDestino();
 
 		Pieza pieza = obtenerPieza(origen);
 		if (pieza == null) {
-			return;
+			return false;
 		}
 
 		if (posicionOcupada(destino)) {
@@ -64,6 +64,7 @@ public class Tablero {
 		casillas[origen.getFila()][origen.getColumna()] = null;
 
 		pieza.setPosicion(destino);
+		return true;
 	}
 
 	public boolean posicionOcupada(Posicion pos) {
@@ -76,6 +77,33 @@ public class Tablero {
 			casillas[posicion.getFila()][posicion.getColumna()] = null;
 		}
 		return capturada;
+	}
+
+	public ColorPieza verificarReyes() {
+		boolean reyRojoPresente = false;
+		boolean reyNegroPresente = false;
+
+		for (int i = 0; i < casillas.length; i++) {
+			for (int j = 0; j < casillas[i].length; j++) {
+				Pieza pieza = casillas[i][j];
+				if (pieza != null && pieza.getTipo().equalsIgnoreCase("PiezaRey")) {
+					if (pieza.getColor() == ColorPieza.ROJO) {
+						reyRojoPresente = true;
+					} else if (pieza.getColor() == ColorPieza.NEGRO) {
+						reyNegroPresente = true;
+					}
+				}
+			}
+		}
+
+		if (reyRojoPresente && reyNegroPresente) {
+			return null;
+		} else if (reyNegroPresente) {
+			return ColorPieza.NEGRO;
+		} else if (reyRojoPresente) {
+			return ColorPieza.ROJO;
+		}
+		return null;
 	}
 
 	public boolean esJaque(ColorPieza color) {

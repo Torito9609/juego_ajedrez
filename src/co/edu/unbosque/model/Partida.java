@@ -10,7 +10,7 @@ public class Partida {
 	private Jugador jugadorHumano;
 	private Jugador jugadorMaquina;
 	private Maquina maquina;
-	private boolean turnoRojas;
+	private ColorPieza turnoActual;
 	private LocalDateTime inicioPartida;
 	private LocalDateTime finPartida;
 	private boolean partidaPausada;
@@ -19,10 +19,10 @@ public class Partida {
 
 	public Partida(String nombreJugador) {
 		this.tablero = new Tablero();
-		this.jugadorHumano = new Jugador(nombreJugador, false);
-		this.jugadorMaquina = new Jugador("maquina", true);
+		this.jugadorHumano = new Jugador(nombreJugador, false, ColorPieza.NEGRO);
+		this.jugadorMaquina = new Jugador("maquina", true, ColorPieza.ROJO);
 		this.maquina = new Maquina();
-		this.turnoRojas = true;
+		this.turnoActual = ColorPieza.ROJO;
 		this.finPartida = null;
 		this.partidaPausada = false;
 		this.ganador = null;
@@ -33,7 +33,6 @@ public class Partida {
 		if (inicioPartida == null) {
 			this.inicioPartida = LocalDateTime.now();
 			tablero.inicializarTablero();
-			turnoRojas = true;
 			System.out.println("La partida ha inciado a las: " + formatearHora(inicioPartida));
 		} else {
 			System.out.println("La partida ya estaba iniciada");
@@ -55,7 +54,7 @@ public class Partida {
 		guardarHistorial();
 	}
 
-	private String guardarHistorial() {
+	public String guardarHistorial() {
 		String horaInicio = inicioPartida != null ? formatearHora(inicioPartida) : "No iniciada";
 		String horaFin = finPartida != null ? formatearHora(finPartida) : "No finalizada";
 		String resultado = "Inicio: " + horaInicio + " - Fin: " + horaFin + " - Ganador: " + ganador;
@@ -65,6 +64,87 @@ public class Partida {
 		} catch (Exception e) {
 			return "Error al guardar el historial de la partida" + e.getMessage();
 		}
+	}
+	
+	public void verificarGanadorPorEliminacionDeRey() {
+	    ColorPieza reyRestante = tablero.verificarReyes();
+	    if (reyRestante != null) {
+	        if (reyRestante == ColorPieza.NEGRO) {
+	            ganador = jugadorHumano.getNombre();
+	            this.finPartida = LocalDateTime.now();
+	        } else if (reyRestante == ColorPieza.ROJO) {
+	            ganador = jugadorMaquina.getNombre();
+	            this.finPartida = LocalDateTime.now();
+	        }
+	    }
+	}
+
+
+	public ResultadoMovimiento moverPieza(Movimiento movimiento) {
+		System.out.println("Llamada a moverPieza en Partida");
+
+		if (turnoActual == ColorPieza.ROJO) {
+			movimiento = maquina.generarMovimiento(tablero);
+			if (movimiento == null) {
+				return new ResultadoMovimiento("No hay movimientos válidos para la máquina.", false);
+			}
+			System.out.println("Movimiento de la máquina: " + movimiento);
+		} else {
+
+			if (tablero.posicionOcupada(movimiento.getOrigen())) {
+				
+				Pieza piezaOrigen = tablero.obtenerPieza(movimiento.getOrigen());
+				System.out.println("Intento de mover pieza de color: " + piezaOrigen.getColor());
+				if (piezaOrigen.getColor() == ColorPieza.ROJO) {
+					return new ResultadoMovimiento("No puedes mover las piezas de la máquina.", false);
+				}
+			} else {
+				return new ResultadoMovimiento("No hay pieza en la posición de origen.", false);
+			}
+		}
+
+		boolean seMovio = tablero.moverPieza(movimiento);
+
+		if (!seMovio) {
+			return new ResultadoMovimiento("Movimiento Inválido.", false);
+		}
+		
+		verificarGanadorPorEliminacionDeRey();
+	    if (ganador != null) {
+	        System.out.println("Partida finalizada. Ganador: " + ganador);
+	        return new ResultadoMovimiento("Partida finalizada por eliminacion", true);
+	    }
+
+		ColorPieza colorJugadorActual = turnoActual;
+		ColorPieza oponente = (colorJugadorActual == ColorPieza.ROJO) ? ColorPieza.NEGRO : ColorPieza.ROJO;
+
+		if (esJaque(oponente)) {
+			if (esJaqueMate(oponente)) {
+				Jugador jugadorActual = (turnoActual == ColorPieza.ROJO) ? jugadorMaquina : jugadorHumano;
+				ganador = jugadorActual.getNombre();
+				System.out.println("Es jaque mate");
+				return new ResultadoMovimiento("Jaque mate.", true);
+				
+			}
+			turnoActual = oponente;
+			System.out.println("Turno actual: " + turnoActual);
+			System.out.println("Es jaque");
+			return new ResultadoMovimiento("Jaque.", true);
+		}
+
+		turnoActual = oponente;
+		System.out.println("Turno actual: " + turnoActual);
+		return new ResultadoMovimiento("Movimiento exitoso.", true);
+	}
+
+	public boolean esJaque(ColorPieza color) {
+		System.out.println("Llamada a es Jaque");
+		return tablero.esJaque(color);
+	}
+
+	public boolean esJaqueMate(ColorPieza color) {
+		System.out.println("Llamada a es Jaque Mate");
+		return tablero.esJaqueMate(color);
 	}
 
 	private String formatearHora(LocalDateTime hora) {
@@ -104,12 +184,20 @@ public class Partida {
 		this.maquina = maquina;
 	}
 
-	public boolean isTurnoRojas() {
-		return turnoRojas;
+	public ColorPieza getTurnoActual() {
+		return turnoActual;
 	}
 
-	public void setTurnoRojas(boolean turnoRojas) {
-		this.turnoRojas = turnoRojas;
+	public void setTurnoActual(ColorPieza turnoActual) {
+		this.turnoActual = turnoActual;
+	}
+
+	public boolean isPartidaPausada() {
+		return partidaPausada;
+	}
+
+	public void setPartidaPausada(boolean partidaPausada) {
+		this.partidaPausada = partidaPausada;
 	}
 
 	public LocalDateTime getInicioPartida() {

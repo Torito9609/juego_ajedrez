@@ -28,6 +28,10 @@ public class View {
     public int mostrarMensajeConfirmacion(String mensaje) {
         return JOptionPane.showConfirmDialog(ventana, mensaje, "Confirmación", JOptionPane.YES_NO_OPTION);
     }
+    
+    public String mostrarMensajePedirInfo(String mensaje) {
+    	return JOptionPane.showInputDialog(ventana, mensaje, "Ingreso de nombre", JOptionPane.PLAIN_MESSAGE);
+    }
 
     public VentanaPrincipal getVentana() {
         return ventana;

@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-class PanelLateral extends JPanel {
+public class PanelLateral extends JPanel {
     private static final long serialVersionUID = 1L;
     private JLabel tituloTiempo;
     private JLabel tiempo;
