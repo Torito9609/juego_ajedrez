@@ -34,6 +34,27 @@ public class Controller implements ActionListener {
 		partida.iniciarPartida();
 		actualizarVista();
 	}
+	
+	private void reiniciarPartida() {
+	    
+	    int opcion = vista.mostrarMensajeConfirmacion("Desea cambiar el nombre?");
+	    
+	    String nombreJugador;
+	    if(opcion == JOptionPane.YES_OPTION) {
+	        nombreJugador = vista.mostrarMensajePedirInfo("Ingresa tu nuevo nombre");
+	        if(nombreJugador == null || nombreJugador.trim().isEmpty()){
+	            nombreJugador = partida.getJugadorHumano().getNombre();
+	        }
+	    } else {
+	        nombreJugador = partida.getJugadorHumano().getNombre();
+	    }
+	    
+	    partida = new Partida(nombreJugador);
+	    asignarOyentes();
+	    iniciarPartida();
+	    actualizarVista();
+	}
+
 
 	private void actualizarVista() {
 		// System.out.println(partida.getTablero().getCasillas());
@@ -87,7 +108,18 @@ public class Controller implements ActionListener {
 		if (fuente == vista.getVentana().getPanelLateral().getSalir()) {
 
 		} else if (fuente == vista.getVentana().getPanelLateral().getReiniciar()) {
-
+			int opcion = vista.mostrarMensajeConfirmacion("Esta seguro que quiere reiniciar la partida?\nEl ganador será la máquina");
+			if(opcion == 1) {
+				partida.setGanador("maquina");
+				try {
+					partida.guardarHistorial();
+					reiniciarPartida();
+				}catch(Exception ex) {
+					vista.mostrarMensajeError(ex.getMessage());
+				}			
+			}else {
+				return;
+			}
 		} else if (fuente == vista.getVentana().getPanelLateral().getPausar()) {
 
 		} else if (fuente == vista.getVentana().getPanelLateral().getBorrarHistorial()) {
@@ -136,7 +168,7 @@ public class Controller implements ActionListener {
 						} else if(resultado.getMensaje().equals("Partida finalizada por eliminacion")) {
 							try {
 								partida.guardarHistorial();
-								System.exit(0);
+								reiniciarPartida();
 							}
 							catch(Exception ex) {
 								vista.mostrarMensajeError(ex.getMessage());

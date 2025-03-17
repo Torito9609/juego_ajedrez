@@ -14,7 +14,11 @@ public class Archivo {
 	private File f;
 
 	public Archivo() {
-		f = new File("files\\logs.txt");
+		f = new File("archivos\\logs.txt");
+		File directorio = f.getParentFile();
+		if (!directorio.exists()) {
+	        directorio.mkdirs(); 
+	    }
 	}
 
 	public Archivo(File f) {

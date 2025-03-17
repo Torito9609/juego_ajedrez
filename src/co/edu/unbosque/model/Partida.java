@@ -1,5 +1,6 @@
 package co.edu.unbosque.model;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -50,35 +51,63 @@ public class Partida {
 
 		this.finPartida = LocalDateTime.now();
 		this.ganador = ganador;
-
-		guardarHistorial();
+		try {
+			guardarHistorial();
+		} catch(Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+		
 	}
 
-	public String guardarHistorial() {
-		String horaInicio = inicioPartida != null ? formatearHora(inicioPartida) : "No iniciada";
-		String horaFin = finPartida != null ? formatearHora(finPartida) : "No finalizada";
-		String resultado = "Inicio: " + horaInicio + " - Fin: " + horaFin + " - Ganador: " + ganador;
-		try {
-			arch.escribirArchivo(resultado);
-			return "Partida finalizada exitosamente.";
-		} catch (Exception e) {
-			return "Error al guardar el historial de la partida" + e.getMessage();
+	public void guardarHistorial() throws IOException {
+	    System.out.println("guardar historial llamado");
+	    
+	    String horaInicioStr = inicioPartida != null ? formatearHora(inicioPartida) : "No iniciada";
+	    String horaFinStr = finPartida != null ? formatearHora(finPartida) : "No finalizada";
+	    
+	    String duracionStr = "N/A";
+	    if (inicioPartida != null && finPartida != null) {
+	        int totalInicio = inicioPartida.getHour() * 3600 
+	                        + inicioPartida.getMinute() * 60 
+	                        + inicioPartida.getSecond();
+	        int totalFin = finPartida.getHour() * 3600 
+	                     + finPartida.getMinute() * 60 
+	                     + finPartida.getSecond();
+	        
+	        int diffSeconds = totalFin - totalInicio;
+	        if (diffSeconds < 0) {
+	            diffSeconds += 24 * 3600;
+	        }
+	        
+	        int diffHour = diffSeconds / 3600;
+	        int diffMinute = (diffSeconds % 3600) / 60;
+	        int diffSecond = diffSeconds % 60;
+	        
+	        LocalDateTime duracion = LocalDateTime.of(1970, 1, 1, diffHour, diffMinute, diffSecond);
+	        duracionStr = formatearHora(duracion);
+	    }
+	    
+	    String resultado = "Inicio: " + horaInicioStr 
+	            + " - Fin: " + horaFinStr 
+	            + " - Duracion: " + duracionStr 
+	            + " - Ganador: " + ganador;
+
+	    arch.escribirArchivo(resultado);
+	}
+
+
+	public void verificarGanadorPorEliminacionDeRey() {
+		ColorPieza reyRestante = tablero.verificarReyes();
+		if (reyRestante != null) {
+			if (reyRestante == ColorPieza.NEGRO) {
+				ganador = jugadorHumano.getNombre();
+				this.finPartida = LocalDateTime.now();
+			} else if (reyRestante == ColorPieza.ROJO) {
+				ganador = jugadorMaquina.getNombre();
+				this.finPartida = LocalDateTime.now();
+			}
 		}
 	}
-	
-	public void verificarGanadorPorEliminacionDeRey() {
-	    ColorPieza reyRestante = tablero.verificarReyes();
-	    if (reyRestante != null) {
-	        if (reyRestante == ColorPieza.NEGRO) {
-	            ganador = jugadorHumano.getNombre();
-	            this.finPartida = LocalDateTime.now();
-	        } else if (reyRestante == ColorPieza.ROJO) {
-	            ganador = jugadorMaquina.getNombre();
-	            this.finPartida = LocalDateTime.now();
-	        }
-	    }
-	}
-
 
 	public ResultadoMovimiento moverPieza(Movimiento movimiento) {
 		System.out.println("Llamada a moverPieza en Partida");
@@ -92,7 +121,7 @@ public class Partida {
 		} else {
 
 			if (tablero.posicionOcupada(movimiento.getOrigen())) {
-				
+
 				Pieza piezaOrigen = tablero.obtenerPieza(movimiento.getOrigen());
 				System.out.println("Intento de mover pieza de color: " + piezaOrigen.getColor());
 				if (piezaOrigen.getColor() == ColorPieza.ROJO) {
@@ -108,12 +137,12 @@ public class Partida {
 		if (!seMovio) {
 			return new ResultadoMovimiento("Movimiento Inválido.", false);
 		}
-		
+
 		verificarGanadorPorEliminacionDeRey();
-	    if (ganador != null) {
-	        System.out.println("Partida finalizada. Ganador: " + ganador);
-	        return new ResultadoMovimiento("Partida finalizada por eliminacion", true);
-	    }
+		if (ganador != null) {
+			System.out.println("Partida finalizada. Ganador: " + ganador);
+			return new ResultadoMovimiento("Partida finalizada por eliminacion", true);
+		}
 
 		ColorPieza colorJugadorActual = turnoActual;
 		ColorPieza oponente = (colorJugadorActual == ColorPieza.ROJO) ? ColorPieza.NEGRO : ColorPieza.ROJO;
@@ -124,7 +153,7 @@ public class Partida {
 				ganador = jugadorActual.getNombre();
 				System.out.println("Es jaque mate");
 				return new ResultadoMovimiento("Jaque mate.", true);
-				
+
 			}
 			turnoActual = oponente;
 			System.out.println("Turno actual: " + turnoActual);
