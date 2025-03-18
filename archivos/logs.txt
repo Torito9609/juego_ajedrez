@@ -1,5 +1,2 @@
-Inicio: 16:36:31 - Fin: 16:36:48 - Ganador: kev
-Inicio: 16:42:26 - Fin: 16:42:50 - Duracion: 00:00:24 - Ganador: Kevin
-Inicio: 16:51:17 - Fin: 16:51:30 - Duracion: 00:00:13 - Ganador: Kevin
-Inicio: 16:51:57 - Fin: 16:53:38 - Duracion: 00:01:41 - Ganador: Kevin
-Inicio: 16:59:46 - Fin: No finalizada - Duracion: N/A - Ganador: maquina
+Inicio: 11:04:27 - Fin: 11:05:46 - Duracion: 00:01:19 - Ganador: Nombre
+Inicio: 11:14:45 - Fin: 11:16:21 - Duracion: 00:01:36 - Ganador: Chepon

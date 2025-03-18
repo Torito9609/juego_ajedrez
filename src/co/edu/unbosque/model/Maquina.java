@@ -36,7 +36,7 @@ public class Maquina {
 		}
 
 		if (movimientosValidos.isEmpty()) {
-			return null; // 
+			return null;  
 		}
 
 		Random random = new Random();

@@ -3,6 +3,8 @@ package co.edu.unbosque.model;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import co.edu.unbosque.model.persistence.Archivo;
 
@@ -41,60 +43,84 @@ public class Partida {
 	}
 
 	public void pausarPartida() {
-		partidaPausada = !partidaPausada;
+		if (!partidaPausada) {
+			finPartida = LocalDateTime.now();
+			partidaPausada = true;
+			System.out.println("Partida pausada a las " + formatearHora(finPartida));
+		} else {
+			LocalDateTime reanudar = LocalDateTime.now();
+			long segundosPausa = java.time.Duration.between(finPartida, reanudar).getSeconds();
+			inicioPartida = inicioPartida.plusSeconds(segundosPausa);
+			partidaPausada = false;
+			finPartida = null;
+		}
 	}
 
-	public void finalizarPartida(String ganador) {
+	public void reiniciarPartida(String nombreJugador) {
+		this.tablero = new Tablero();
+		this.jugadorHumano = new Jugador(nombreJugador, false, ColorPieza.NEGRO);
+		this.jugadorMaquina = new Jugador("maquina", true, ColorPieza.ROJO);
+		this.maquina = new Maquina();
+		this.turnoActual = ColorPieza.ROJO;
+		this.finPartida = null;
+		this.partidaPausada = false;
+		this.ganador = null;
+		this.inicioPartida = LocalDateTime.now();
+		tablero.inicializarTablero();
+	}
+
+	public void finalizarPartida(String ganador) throws IOException {
 		if (inicioPartida == null) {
 			return;
 		}
 
 		this.finPartida = LocalDateTime.now();
 		this.ganador = ganador;
-		try {
-			guardarHistorial();
-		} catch(Exception ex) {
-			System.out.println(ex.getMessage());
-		}
-		
+
+		guardarHistorial();
+
 	}
 
 	public void guardarHistorial() throws IOException {
-	    System.out.println("guardar historial llamado");
-	    
-	    String horaInicioStr = inicioPartida != null ? formatearHora(inicioPartida) : "No iniciada";
-	    String horaFinStr = finPartida != null ? formatearHora(finPartida) : "No finalizada";
-	    
-	    String duracionStr = "N/A";
-	    if (inicioPartida != null && finPartida != null) {
-	        int totalInicio = inicioPartida.getHour() * 3600 
-	                        + inicioPartida.getMinute() * 60 
-	                        + inicioPartida.getSecond();
-	        int totalFin = finPartida.getHour() * 3600 
-	                     + finPartida.getMinute() * 60 
-	                     + finPartida.getSecond();
-	        
-	        int diffSeconds = totalFin - totalInicio;
-	        if (diffSeconds < 0) {
-	            diffSeconds += 24 * 3600;
-	        }
-	        
-	        int diffHour = diffSeconds / 3600;
-	        int diffMinute = (diffSeconds % 3600) / 60;
-	        int diffSecond = diffSeconds % 60;
-	        
-	        LocalDateTime duracion = LocalDateTime.of(1970, 1, 1, diffHour, diffMinute, diffSecond);
-	        duracionStr = formatearHora(duracion);
-	    }
-	    
-	    String resultado = "Inicio: " + horaInicioStr 
-	            + " - Fin: " + horaFinStr 
-	            + " - Duracion: " + duracionStr 
-	            + " - Ganador: " + ganador;
+		System.out.println("guardar historial llamado");
 
-	    arch.escribirArchivo(resultado);
+		String horaInicioStr = inicioPartida != null ? formatearHora(inicioPartida) : "No iniciada";
+		String horaFinStr = finPartida != null ? formatearHora(finPartida) : "No finalizada";
+
+		String duracionStr = "N/A";
+		if (inicioPartida != null && finPartida != null) {
+			int totalInicio = inicioPartida.getHour() * 3600 + inicioPartida.getMinute() * 60
+					+ inicioPartida.getSecond();
+			int totalFin = finPartida.getHour() * 3600 + finPartida.getMinute() * 60 + finPartida.getSecond();
+
+			int diffSeconds = totalFin - totalInicio;
+			if (diffSeconds < 0) {
+				diffSeconds += 24 * 3600;
+			}
+
+			int diffHour = diffSeconds / 3600;
+			int diffMinute = (diffSeconds % 3600) / 60;
+			int diffSecond = diffSeconds % 60;
+
+			LocalDateTime duracion = LocalDateTime.of(1970, 1, 1, diffHour, diffMinute, diffSecond);
+			duracionStr = formatearHora(duracion);
+		}
+
+		String resultado = "Inicio: " + horaInicioStr + " - Fin: " + horaFinStr + " - Duracion: " + duracionStr
+				+ " - Ganador: " + ganador;
+
+		arch.escribirArchivo(resultado);
 	}
 
+	public List<String> cargarHistorial() throws IOException {
+
+		return arch.leerLineas();
+
+	}
+	
+	public void borrarHistorial() throws IOException{
+		arch.borrarArchivo();
+	}
 
 	public void verificarGanadorPorEliminacionDeRey() {
 		ColorPieza reyRestante = tablero.verificarReyes();
