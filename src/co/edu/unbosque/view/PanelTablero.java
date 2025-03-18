@@ -10,7 +10,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class PanelTablero extends JPanel {
-	private static final long serialVersionUID = 1L;
 	private JButton[][] botonesTablero;
 
 	public PanelTablero() {
@@ -36,20 +35,19 @@ public class PanelTablero extends JPanel {
 	}
 
 	public void actualizarTablero(ImageIcon[][] iconosTablero) {
-	    //System.out.println("Se llamó a actualizarTablero()");
-	    
-	    for (int i = 0; i < 8; i++) {
-	        for (int j = 0; j < 8; j++) {
-	            if (iconosTablero[i][j] != null) {
-	                //System.out.println("Icono asignado en [" + i + "][" + j + "]");
-	            } else {
-	                //System.out.println("Sin icono en [" + i + "][" + j + "]");
-	            }
-	            botonesTablero[i][j].setIcon(iconosTablero[i][j]);
-	        }
-	    }
-	}
+		// System.out.println("Se llamó a actualizarTablero()");
 
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				if (iconosTablero[i][j] != null) {
+					// System.out.println("Icono asignado en [" + i + "][" + j + "]");
+				} else {
+					// System.out.println("Sin icono en [" + i + "][" + j + "]");
+				}
+				botonesTablero[i][j].setIcon(iconosTablero[i][j]);
+			}
+		}
+	}
 
 	public void setListener(ActionListener listener) {
 		for (int i = 0; i < 8; i++) {
@@ -59,19 +57,6 @@ public class PanelTablero extends JPanel {
 		}
 	}
 
-	public int[] obtenerCoordenadas(JButton button) {
-		int fila = (int) button.getClientProperty("fila");
-        int columna = (int) button.getClientProperty("columna");
-        return new int[]{fila, columna};
-	}
-
-	public void habilitarSeleccion(boolean activar) {
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 8; j++) {
-				botonesTablero[i][j].setEnabled(activar);
-			}
-		}
-	}
 
 	public JButton[][] getBotonesTablero() {
 		return botonesTablero;
@@ -81,7 +66,4 @@ public class PanelTablero extends JPanel {
 		this.botonesTablero = botonesTablero;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
 }

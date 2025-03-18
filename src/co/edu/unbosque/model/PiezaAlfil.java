@@ -1,10 +1,6 @@
 package co.edu.unbosque.model;
 
 public class PiezaAlfil extends Pieza{
-
-	public PiezaAlfil() {
-		super();
-	}
 	
 	public PiezaAlfil(ColorPieza color, Posicion posicion) {
 		super(color, posicion);

@@ -1,19 +1,13 @@
 package co.edu.unbosque.model;
 
-
 public abstract class Pieza {
 	protected ColorPieza color;
 	protected Posicion posicion;
-	
-	public Pieza() {
-	}
 
 	public Pieza(ColorPieza color, Posicion posicion) {
 		this.color = color;
 		this.posicion = posicion;
 	}
-	
-	
 
 	public ColorPieza getColor() {
 		return color;
@@ -30,15 +24,11 @@ public abstract class Pieza {
 	public void setPosicion(Posicion posicion) {
 		this.posicion = posicion;
 	}
-	
+
 	public abstract boolean esMovimientoValido(Posicion destino, Tablero tablero);
-	
-	public void mover(Posicion destino) {
-		this.posicion = destino;
-	}
-	
+
 	public String getTipo() {
-        return this.getClass().getSimpleName();
-    }
+		return this.getClass().getSimpleName();
+	}
 
 }

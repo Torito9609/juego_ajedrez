@@ -3,7 +3,6 @@ package co.edu.unbosque.model;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 import co.edu.unbosque.model.persistence.Archivo;

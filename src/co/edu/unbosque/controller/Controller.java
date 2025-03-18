@@ -35,7 +35,7 @@ public class Controller implements ActionListener {
 
 	}
 
-	public void iniciarPartida() {
+	private void iniciarPartida() {
 		partida.iniciarPartida();
 		actualizarVista();
 		cargarHistorial();
@@ -115,7 +115,7 @@ public class Controller implements ActionListener {
 		}
 	}
 
-	public void asignarOyentes() {
+	private void asignarOyentes() {
 		this.vista.getVentana().getPanelTablero().setListener(this);
 		this.vista.getVentana().getPanelLateral().setListener(this);
 	}
